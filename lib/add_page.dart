@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'BaseStatefulWidget.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 
-class AddPage extends StatefulWidget {
+class AddPage extends BaseStatefulWidget {
   @override
   _AddPageState createState() => _AddPageState();
 }
@@ -8,9 +13,11 @@ class AddPage extends StatefulWidget {
 class _AddPageState extends State<AddPage> {
   int _category = 0;
   int _userNumber = 0;
-  String _money = '';
   final moneyController = TextEditingController();
   final descriptionController = TextEditingController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  var _showLoading = false;
 
   _categoryChanged(int value) {
     setState(() {
@@ -24,9 +31,17 @@ class _AddPageState extends State<AddPage> {
     });
   }
 
+  _loadingState(bool isShow) {
+    setState(() {
+      _showLoading = isShow;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Stack(children: <Widget>[
+      Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text('문화생활 추가'),
         ),
@@ -113,15 +128,61 @@ class _AddPageState extends State<AddPage> {
                       color: Colors.red,
                       textColor: Colors.white,
                       onPressed: () {
-                        debugPrint(descriptionController.text);
-                        debugPrint(moneyController.text);
+                        _loadingState(true);
+                        _addCultureHousehold();
                       },
                       child: Text('추가'),
                     )),
               ),
             ],
           ),
-        ));
+        ),
+      ),
+      _showLoading
+          ? Container(
+              color: Color.fromRGBO(1, 1, 1, 0.5),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          : Center()
+    ]);
   }
 
+  void _addCultureHousehold() {
+    FirebaseAuth.instance.currentUser().then((user) {
+      if (user != null) {
+        final Firestore firestore = Firestore.instance;
+
+        if (moneyController.text.isEmpty) {
+          _showSnackBar('금액을 입력해주세요!');
+          return;
+        }
+
+        if (descriptionController.text.isEmpty) {
+          _showSnackBar('내용을 입력해주세요!');
+          return;
+        }
+
+        var doc = firestore.collection('household').document();
+        doc.setData({
+          'id': doc.documentID,
+          'uid': user.uid,
+          'created_at': DateTime.now().millisecondsSinceEpoch,
+          'category': _category,
+          'money': moneyController.text,
+          'description': descriptionController.text
+        }).then((onValue) {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            SystemNavigator.pop();
+          }
+        });
+      }
+    });
+  }
+
+  void _showSnackBar(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
 }

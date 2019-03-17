@@ -1,4 +1,5 @@
 import 'package:culture_household/add_page.dart';
+import 'package:culture_household/views.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
@@ -74,18 +75,12 @@ class _MainItemState extends State<MainItem> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          '공부📚',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        Text(
-                          '금액 : 30,000원',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Text('내용 : Inflearn에서 Flutter 인강',
-                            style: TextStyle(fontSize: 16)),
-                        Text('사용자 : 정석원', style: TextStyle(fontSize: 16)),
-                        Text('지급일 : 2019.3.27', style: TextStyle(fontSize: 16))
+                        bmjuaText('자기개발📚', 24, TextAlign.left, 0, 2),
+                        hannaText('금액 : 30,000원', 16, TextAlign.left, 0, 4),
+                        hannaText('내용 : Inflearn에서 Flutter 인강', 16,
+                            TextAlign.left, 0, 4),
+                        hannaText('사용자 : 정석원', 16, TextAlign.left, 0, 4),
+                        hannaText('지급일 : 2019.3.27', 16, TextAlign.left, 0, 4),
                       ],
                     ),
                   )
