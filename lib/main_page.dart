@@ -1,7 +1,6 @@
 import 'package:culture_household/add_page.dart';
 import 'package:flutter/material.dart';
 
-
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
@@ -17,7 +16,11 @@ class _MainPageState extends State<MainPage> {
                   context, MaterialPageRoute(builder: (context) => AddPage()));
             },
             child: Icon(Icons.add)),
-        appBar: AppBar(title: Text('문화 가계부')),
+        appBar: AppBar(
+            title: Text(
+          '문화 가계부',
+          style: TextStyle(fontFamily: 'bmjua'),
+        )),
         body: Center(
           child: ListView.builder(
               itemCount: 100,
@@ -82,8 +85,7 @@ class _MainItemState extends State<MainItem> {
                         Text('내용 : Inflearn에서 Flutter 인강',
                             style: TextStyle(fontSize: 16)),
                         Text('사용자 : 정석원', style: TextStyle(fontSize: 16)),
-                        Text(
-                            '지급일 : 2019.3.27', style: TextStyle(fontSize: 16))
+                        Text('지급일 : 2019.3.27', style: TextStyle(fontSize: 16))
                       ],
                     ),
                   )
