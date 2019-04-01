@@ -21,10 +21,10 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
-  firebase_auth: ^0.8.1+4
+  firebase_auth: ^0.8.3
   google_sign_in: ^4.0.1+1
   flutter_signin_button: ^0.2.6
-  cloud_firestore: ^0.9.7
+  cloud_firestore: ^0.9.7+2
   progress_indicators: ^0.1.2
 
 
