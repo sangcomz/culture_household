@@ -34,7 +34,6 @@ class LoginPage extends StatelessWidget {
   }
 
   Future<FirebaseUser> _handleGoogleSignIn() async {
-    if (_auth == null) debugPrint('null!!');
     GoogleSignInAccount account = await _googleSignIn.signIn();
     GoogleSignInAuthentication authentication = await account.authentication;
     FirebaseUser user = await _auth.signInWithCredential(

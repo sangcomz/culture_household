@@ -120,7 +120,7 @@ class _GroupPageState extends State<GroupPage> {
           } else {
             _showSnackBar('일시적 오류입니다. 잠시후 다시 시도해주세요!');
           }
-        }).catchError((error){
+        }).catchError((error) {
           print('error !! $error');
         });
       }
@@ -131,6 +131,17 @@ class _GroupPageState extends State<GroupPage> {
     var groupName = existGroupController.text;
     isExistGroup(groupName).then((isExist) {
       if (isExist) {
+        joinGroup(groupName).then((data) {
+          if (data) {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => MainPage()));
+          } else {
+            _showSnackBar('일시적 오류입니다. 잠시후에 다시 시도해주세요.');
+          }
+        }, onError: (error) {
+          print('update users error3 $error');
+          _showSnackBar('일시적 오류입니다. 잠시후에 다시 시도해주세요.');
+        });
       } else {
         _showSnackBar('존재하지 않는 그룹 아이디입니다.');
       }
