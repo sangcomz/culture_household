@@ -4,17 +4,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'BaseStatefulWidget.dart';
-import 'package:progress_indicators/progress_indicators.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class AddPage extends BaseStatefulWidget {
+  final FirebaseUser _user;
+  final Group _group;
+
+  AddPage(this._user, this._group);
+
   @override
-  _AddPageState createState() => _AddPageState();
+  _AddPageState createState() => _AddPageState(_user, _group);
 }
 
 class _AddPageState extends State<AddPage> {
+  final FirebaseUser _user;
+  final Group _group;
+
+  _AddPageState(this._user, this._group);
+
   int _category = 0;
-  int _userNumber = 0;
-  final moneyController = TextEditingController();
+  final moneyController = MoneyMaskedTextController(
+      initialValue: 0, precision: 3, thousandSeparator: ',', rightSymbol: '원');
   final descriptionController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -23,12 +33,6 @@ class _AddPageState extends State<AddPage> {
   _categoryChanged(int value) {
     setState(() {
       _category = value;
-    });
-  }
-
-  _userChanged(int value) {
-    setState(() {
-      _userNumber = value;
     });
   }
 
@@ -80,26 +84,6 @@ class _AddPageState extends State<AddPage> {
                       ),
                     ],
                   ),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    direction: Axis.horizontal,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('사용자'),
-                      ),
-                      DropdownButton<int>(
-                        value: _userNumber,
-                        items: <DropdownMenuItem<int>>[
-                          const DropdownMenuItem(
-                              child: const Text('한사람🎃'), value: 0),
-                          const DropdownMenuItem(
-                              child: const Text('두사람🐔'), value: 1),
-                        ],
-                        onChanged: _userChanged,
-                      ),
-                    ],
-                  ),
                 ],
               ),
               Padding(
@@ -130,7 +114,7 @@ class _AddPageState extends State<AddPage> {
                       textColor: Colors.white,
                       onPressed: () {
                         _loadingState(true);
-                        _addCultureHousehold();
+                        _addCultureHousehold(_user, _group);
                       },
                       child: Text('추가'),
                     )),
@@ -148,36 +132,37 @@ class _AddPageState extends State<AddPage> {
     ]);
   }
 
-  void _addCultureHousehold() {
-    FirebaseAuth.instance.currentUser().then((user) {
-      if (user != null) {
-        final Firestore firestore = Firestore.instance;
+  void _addCultureHousehold(FirebaseUser user, Group group) {
+    final Firestore firestore = Firestore.instance;
 
-        if (moneyController.text.isEmpty) {
-          _showSnackBar('금액을 입력해주세요!');
-          return;
-        }
+    if (moneyController.text.isEmpty) {
+      _showSnackBar('금액을 입력해주세요!');
+      return;
+    }
 
-        if (descriptionController.text.isEmpty) {
-          _showSnackBar('내용을 입력해주세요!');
-          return;
-        }
-
-        var doc = firestore.collection('household').document();
-        doc.setData({
-          'id': doc.documentID,
-          'uid': user.uid,
-          'created_at': DateTime.now().millisecondsSinceEpoch,
-          'category': _category,
-          'money': moneyController.text,
-          'description': descriptionController.text
-        }).then((onValue) {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          } else {
-            SystemNavigator.pop();
-          }
-        });
+    if (descriptionController.text.isEmpty) {
+      _showSnackBar('내용을 입력해주세요!');
+      return;
+    }
+    var doc = firestore
+        .collection('household')
+        .document(group.id)
+        .collection('list')
+        .document();
+    doc.setData({
+      'id': doc.documentID,
+      'uid': user.uid,
+      'name': user.displayName,
+      'profile': user.photoUrl,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
+      'category': _category,
+      'money': moneyController.text,
+      'description': descriptionController.text
+    }).then((onValue) {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      } else {
+        SystemNavigator.pop();
       }
     });
   }

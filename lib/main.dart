@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:culture_household/splash_page.dart';
 import 'package:flutter/material.dart';
 
-//void main() => runApp(MyApp());
 
 Future<void> main() async {
   final Firestore firestore = Firestore.instance;

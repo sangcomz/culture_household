@@ -2,6 +2,7 @@ import 'package:culture_household/BaseStatefulWidget.dart';
 import 'package:culture_household/group_manager.dart';
 import 'package:culture_household/main_page.dart';
 import 'package:culture_household/views.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class GroupPage extends BaseStatefulWidget {
@@ -109,14 +110,13 @@ class _GroupPageState extends State<GroupPage> {
 
   void _addNewGroup() {
     var groupName = newGroupController.text;
-    isExistGroup(groupName).then((isExist) {
-      if (isExist) {
+    isExistGroup(groupName).then((group) {
+      if (group != null) {
         _showSnackBar('이미 존재하는 그룹 아이디입니다.');
       } else {
         createGroup(groupName).then((created) {
           if (created) {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => MainPage()));
+            goMainPage(group);
           } else {
             _showSnackBar('일시적 오류입니다. 잠시후 다시 시도해주세요!');
           }
@@ -129,12 +129,11 @@ class _GroupPageState extends State<GroupPage> {
 
   void _joinGroup() {
     var groupName = existGroupController.text;
-    isExistGroup(groupName).then((isExist) {
-      if (isExist) {
+    isExistGroup(groupName).then((group) {
+      if (group != null) {
         joinGroup(groupName).then((data) {
           if (data) {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => MainPage()));
+            goMainPage(group);
           } else {
             _showSnackBar('일시적 오류입니다. 잠시후에 다시 시도해주세요.');
           }
@@ -151,5 +150,14 @@ class _GroupPageState extends State<GroupPage> {
   void _showSnackBar(String message) {
     final snackBar = SnackBar(content: Text(message));
     _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  void goMainPage(Group group) {
+    FirebaseAuth.instance.currentUser().then((user) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => MainPage(user, group)));
+    }, onError: (error) {
+      _showSnackBar('일시적 오류입니다. 잠시후 다시 시도해주세요!');
+    });
   }
 }

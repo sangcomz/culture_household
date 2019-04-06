@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class Group {
   String id;
   String host;
   int createdAt;
   String groupName;
-  var users = [];
-
+  List<String> users = [];
   Group(this.id, this.host, this.createdAt, this.groupName, this.users);
 }
 
@@ -33,60 +31,36 @@ Future<bool> createGroup(String groupName) async {
   });
 }
 
-void searchGroup(String uid) {
-//  print('Search Group.....');
-//  return StreamBuilder<QuerySnapshot>(
-//    stream: Firestore.instance
-//        .collection('group')
-//        .snapshots()
-//        .handleError((onError) {
-//      print('onError  $onError');
-//    }),
-//    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-//      if (snapshot.hasError) {
-//        print('error');
-//        return Text('Error: ${snapshot.error}');
-//      }
-//      if (snapshot.hasData) {
-//        print('snapshot data');
-//        return Text('dddd');
-//      } else {
-//        print('no data');
-//        return Text('Empty');
-//      }
-//    },
-//  );
-//  Firestore.instance
-//      .collection('group')
-//      .where("uid", isEqualTo: uid)
-//      .snapshots()
-//      .first
-//      .then((data) => data.documents.forEach((doc) => print(doc["msg"])),
-//          onError: () {});
-}
-
-Future<bool> isExistGroup(String groupName) async {
+Future<Group> isExistGroup(String groupName) async {
   return Firestore.instance
       .collection('group')
       .where("group_name", isEqualTo: groupName)
       .snapshots()
       .first
       .then((data) {
-    return data.documents.isNotEmpty;
+    var groupDoc = data.documents.first.data;
+    List<String> users = List.from(groupDoc['users']);
+    var group = Group(groupDoc['id'], groupDoc['host'], groupDoc['create_at'],
+        groupDoc['group_name'], users);
+    return group;
   }, onError: (error) {
     print('error');
-    return false;
+    return null;
   });
 }
 
-Future<bool> joinedGroup(String uid) async {
+Future<Group> joinedGroup(String uid) async {
   return Firestore.instance
       .collection('group')
       .where("users", arrayContains: uid)
       .snapshots()
       .first
       .then((data) {
-    return data.documents.isNotEmpty;
+    var groupDoc = data.documents.first.data;
+    List<String> users = List.from(groupDoc['users']);
+    var group = Group(groupDoc['id'], groupDoc['host'], groupDoc['create_at'],
+        groupDoc['group_name'], users);
+    return group;
   }, onError: (error) {
     print('error');
     return null;
@@ -104,15 +78,12 @@ Future<bool> joinGroup(String groupName) async {
       return updateUsers(user, data).then((data) {
         return data;
       }, onError: (error) {
-        print('updateUsers error $error');
         return false;
       });
     }, onError: (error) {
-      print('update users error1 $error');
       return false;
     });
   }, onError: (error) {
-    print('update users error2 $error');
     return false;
   });
 }

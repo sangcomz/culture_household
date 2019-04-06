@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:culture_household/group_manager.dart';
 import 'package:culture_household/group_page.dart';
 import 'package:culture_household/login_page.dart';
@@ -12,10 +10,12 @@ class SplashPage extends StatelessWidget {
   _initState(BuildContext context) {
     FirebaseAuth.instance.currentUser().then((firebaseUser) {
       if (firebaseUser != null)
-        joinedGroup(firebaseUser.uid).then((isJoined) {
-          if (isJoined)
+        joinedGroup(firebaseUser.uid).then((group) {
+          if (group != null)
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => MainPage()));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MainPage(firebaseUser, group)));
           else
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => GroupPage()));
@@ -24,7 +24,6 @@ class SplashPage extends StatelessWidget {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LoginPage()));
     }).catchError((onError) {
-      debugPrint('onError :::: ${onError.runtimeType.toString()}');
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
     });
