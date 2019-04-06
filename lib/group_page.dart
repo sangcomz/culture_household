@@ -1,4 +1,5 @@
 import 'package:culture_household/BaseStatefulWidget.dart';
+import 'package:culture_household/ViewExt.dart';
 import 'package:culture_household/group_manager.dart';
 import 'package:culture_household/main_page.dart';
 import 'package:culture_household/views.dart';
@@ -55,7 +56,7 @@ class _GroupPageState extends State<GroupPage> {
                   ),
                   onPressed: () {
                     if (existGroupController.text.isEmpty) {
-                      _showSnackBar('그룹 아이디를 입력해주세요.');
+                      showSnackBar(_scaffoldKey, '그룹 아이디를 입력해주세요.');
                     } else {
                       _joinGroup();
                     }
@@ -94,7 +95,7 @@ class _GroupPageState extends State<GroupPage> {
                   ),
                   onPressed: () {
                     if (newGroupController.text.isEmpty) {
-                      _showSnackBar('그룹 아이디를 입력해주세요.');
+                      showSnackBar(_scaffoldKey, '그룹 아이디를 입력해주세요.');
                     } else {
                       _addNewGroup();
                     }
@@ -112,13 +113,13 @@ class _GroupPageState extends State<GroupPage> {
     var groupName = newGroupController.text;
     isExistGroup(groupName).then((group) {
       if (group != null) {
-        _showSnackBar('이미 존재하는 그룹 아이디입니다.');
+        showSnackBar(_scaffoldKey, '이미 존재하는 그룹 아이디입니다.');
       } else {
         createGroup(groupName).then((created) {
           if (created) {
             goMainPage(group);
           } else {
-            _showSnackBar('일시적 오류입니다. 잠시후 다시 시도해주세요!');
+            showSnackBar(_scaffoldKey, '일시적 오류입니다. 잠시후 다시 시도해주세요!');
           }
         }).catchError((error) {
           print('error !! $error');
@@ -135,21 +136,16 @@ class _GroupPageState extends State<GroupPage> {
           if (data) {
             goMainPage(group);
           } else {
-            _showSnackBar('일시적 오류입니다. 잠시후에 다시 시도해주세요.');
+            showSnackBar(_scaffoldKey, '일시적 오류입니다. 잠시후에 다시 시도해주세요.');
           }
         }, onError: (error) {
           print('update users error3 $error');
-          _showSnackBar('일시적 오류입니다. 잠시후에 다시 시도해주세요.');
+          showSnackBar(_scaffoldKey, '일시적 오류입니다. 잠시후에 다시 시도해주세요.');
         });
       } else {
-        _showSnackBar('존재하지 않는 그룹 아이디입니다.');
+        showSnackBar(_scaffoldKey, '존재하지 않는 그룹 아이디입니다.');
       }
     });
-  }
-
-  void _showSnackBar(String message) {
-    final snackBar = SnackBar(content: Text(message));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   void goMainPage(Group group) {
@@ -157,7 +153,7 @@ class _GroupPageState extends State<GroupPage> {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => MainPage(user, group)));
     }, onError: (error) {
-      _showSnackBar('일시적 오류입니다. 잠시후 다시 시도해주세요!');
+      showSnackBar(_scaffoldKey, '일시적 오류입니다. 잠시후 다시 시도해주세요!');
     });
   }
 }

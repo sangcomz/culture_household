@@ -27,6 +27,7 @@ class SplashPage extends StatelessWidget {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
     });
+
   }
 
   @override
@@ -39,31 +40,5 @@ class SplashPage extends StatelessWidget {
       ),
     ));
   }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    _initState(context);
-//    return Scaffold(body: Center(child: list()));
-//  }
-
-//  Widget list() {
-//    return StreamBuilder<QuerySnapshot>(
-//      stream: Firestore.instance.collection('group').snapshots(),
-//      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-//        if (!snapshot.hasData) return const Text('Loading...');
-//        final int messageCount = snapshot.data.documents.length;
-//        return ListView.builder(
-//          itemCount: messageCount,
-//          itemBuilder: (_, int index) {
-//            final DocumentSnapshot document = snapshot.data.documents[index];
-//            return ListTile(
-//              title: Text(document['init'] ?? '<No message retrieved>'),
-//              subtitle: Text('Message ${index + 1} of $messageCount'),
-//            );
-//          },
-//        );
-//      },
-//    );
-//  }
 
 }

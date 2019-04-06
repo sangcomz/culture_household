@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:culture_household/ViewExt.dart';
 import 'package:culture_household/add_page.dart';
 import 'package:culture_household/category.dart';
 import 'package:culture_household/group_manager.dart';
@@ -49,7 +50,6 @@ class _MainPageState extends State<MainPage> {
           .collection('household')
           .document(group.id)
           .collection('list')
-          .where("uid", isEqualTo: uid)
           .snapshots()
           .handleError((onError) {
         print('onError  $onError');
@@ -250,4 +250,14 @@ class _MainItemState extends State<MainItem> {
     var updateDate = DateTime.fromMillisecondsSinceEpoch(updateAt);
     return '${updateDate.year}/${updateDate.month}/${updateDate.day}';
   }
+}
+
+void goMainPage(
+    BuildContext context, Group group, GlobalKey<ScaffoldState> key) {
+  FirebaseAuth.instance.currentUser().then((user) {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => MainPage(user, group)));
+  }, onError: (error) {
+    showSnackBar(key, '일시적 오류입니다. 잠시후 다시 시도해주세요!');
+  });
 }

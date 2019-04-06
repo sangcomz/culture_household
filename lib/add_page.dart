@@ -1,3 +1,4 @@
+import 'package:culture_household/ViewExt.dart';
 import 'package:culture_household/group_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -136,12 +137,12 @@ class _AddPageState extends State<AddPage> {
     final Firestore firestore = Firestore.instance;
 
     if (moneyController.text.isEmpty) {
-      _showSnackBar('금액을 입력해주세요!');
+      showSnackBar(_scaffoldKey, '금액을 입력해주세요!');
       return;
     }
 
     if (descriptionController.text.isEmpty) {
-      _showSnackBar('내용을 입력해주세요!');
+      showSnackBar(_scaffoldKey, '내용을 입력해주세요!');
       return;
     }
     var doc = firestore
@@ -165,10 +166,5 @@ class _AddPageState extends State<AddPage> {
         SystemNavigator.pop();
       }
     });
-  }
-
-  void _showSnackBar(String message) {
-    final snackBar = SnackBar(content: Text(message));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
