@@ -3,6 +3,8 @@ import 'package:culture_household/ViewExt.dart';
 import 'package:culture_household/add_page.dart';
 import 'package:culture_household/category.dart';
 import 'package:culture_household/group_manager.dart';
+import 'package:culture_household/login_page.dart';
+import 'package:culture_household/presentation/my_custom_icons.dart';
 import 'package:culture_household/views.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +39,18 @@ class _MainPageState extends State<MainPage> {
             },
             child: Icon(Icons.add)),
         appBar: AppBar(
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(MyCustom.logout),
+                onPressed: () {
+                  logout(context);
+                },
+              )
+            ],
             title: Text(
-          '문화 가계부',
-          style: TextStyle(fontFamily: 'bmjua'),
-        )),
+              '문화 가계부',
+              style: TextStyle(fontFamily: 'bmjua'),
+            )),
         body: getItemList(_user.uid, _group));
   }
 
@@ -55,9 +65,13 @@ class _MainPageState extends State<MainPage> {
         print('onError  $onError');
       }),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError || !snapshot.hasData) {
+        if (snapshot.hasError) {
           return Center(
             child: Text('Error'),
+          );
+        } else if (!snapshot.hasData) {
+          return Center(
+            child: Text('Empty'),
           );
         }
         var items = snapshot.data?.documents ?? [];
@@ -91,6 +105,33 @@ class _MainPageState extends State<MainPage> {
         }
       },
     );
+  }
+
+  void logout(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('로그아웃'),
+            content: Text('로그아웃 하시겠습니까?'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('취소'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('로그아웃'),
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => LoginPage()));
+                },
+              ),
+            ],
+          );
+        });
   }
 }
 

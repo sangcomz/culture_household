@@ -46,6 +46,9 @@ flutter:
   - family: hanna
     fonts:
     - asset: fonts/BMHANNAAir_otf.otf
+  - family: MyCustom
+    fonts:
+    - asset: fonts/MyCustom.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

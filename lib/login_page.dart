@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Center(child: bmjuaText('🧾\n문화가계부', 36, TextAlign.center)),
+              Center(child: bmjuaText('📔\n문화가계부', 36, TextAlign.center)),
               SizedBox(
                 height: 40,
                 child: SignInButton(
