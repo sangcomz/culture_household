@@ -60,6 +60,7 @@ class _MainPageState extends State<MainPage> {
           .collection('household')
           .document(group.id)
           .collection('list')
+          .orderBy('created_at', descending: true)
           .snapshots()
           .handleError((onError) {
         print('onError  $onError');

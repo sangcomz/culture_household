@@ -102,11 +102,4 @@ Future<bool> updateUsers(FirebaseUser user, QuerySnapshot data) {
   }, onError: (error) {
     return false;
   });
-//
-//      .then((data) {
-//    return true;
-//  }, onError: (error) {
-//    print('update users error $error');
-//    return false;
-//  });
 }
