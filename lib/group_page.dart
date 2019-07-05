@@ -35,7 +35,7 @@ class _GroupPageState extends State<GroupPage> {
               Padding(
                   padding: EdgeInsets.fromLTRB(80, 16, 80, 16),
                   child: TextFormField(
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
                     controller: existGroupController,
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
@@ -74,7 +74,7 @@ class _GroupPageState extends State<GroupPage> {
               Padding(
                   padding: EdgeInsets.fromLTRB(80, 16, 80, 16),
                   child: TextFormField(
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.text,
                     controller: newGroupController,
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
@@ -117,7 +117,11 @@ class _GroupPageState extends State<GroupPage> {
       } else {
         createGroup(groupName).then((created) {
           if (created) {
-            goMainPage(group);
+            isExistGroup(groupName).then((group){
+              goMainPage(group);
+            }).catchError((error){
+              showSnackBar(_scaffoldKey, '일시적 오류입니다. 잠시후 다시 시도해주세요!');
+            });
           } else {
             showSnackBar(_scaffoldKey, '일시적 오류입니다. 잠시후 다시 시도해주세요!');
           }

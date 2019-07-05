@@ -38,6 +38,9 @@ Future<Group> isExistGroup(String groupName) async {
       .snapshots()
       .first
       .then((data) {
+    if(data.documents.length == 0){
+      return null;
+    }
     var groupDoc = data.documents.first.data;
     List<String> users = List.from(groupDoc['users']);
     var group = Group(groupDoc['id'], groupDoc['host'], groupDoc['create_at'],
@@ -56,6 +59,9 @@ Future<Group> joinedGroup(String uid) async {
       .snapshots()
       .first
       .then((data) {
+    if(data.documents.length == 0){
+      return null;
+    }
     var groupDoc = data.documents.first.data;
     List<String> users = List.from(groupDoc['users']);
     var group = Group(groupDoc['id'], groupDoc['host'], groupDoc['create_at'],

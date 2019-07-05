@@ -51,7 +51,7 @@ class _MainPageState extends State<MainPage> {
               '문화 가계부',
               style: TextStyle(fontFamily: 'bmjua'),
             )),
-        body: getItemList(_user.uid, _group));
+        body: getItemList(_user.uid, this._group));
   }
 
   Widget getItemList(String uid, Group group) {
