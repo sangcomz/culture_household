@@ -137,11 +137,13 @@ class _AddPageState extends State<AddPage> {
     final Firestore firestore = Firestore.instance;
 
     if (moneyController.text.isEmpty) {
+      _showLoading = false;
       showSnackBar(_scaffoldKey, '금액을 입력해주세요!');
       return;
     }
 
     if (descriptionController.text.isEmpty) {
+      _showLoading = false;
       showSnackBar(_scaffoldKey, '내용을 입력해주세요!');
       return;
     }

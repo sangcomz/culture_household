@@ -62,6 +62,7 @@ class _MainPageState extends State<MainPage> {
           .collection('list')
           .orderBy('created_at', descending: true)
           .snapshots()
+          .distinct()
           .handleError((onError) {
         print('onError  $onError');
       }),
@@ -94,10 +95,12 @@ class _MainPageState extends State<MainPage> {
           }).toList();
           return Center(
             child: ListView.builder(
+              key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, position) {
-                  return MainItem(_houseHoldList, _group, position);
-                }),
+                  return MainItem(_houseHoldList[position], _group);
+                }
+                ),
           );
         } else {
           return Center(
@@ -154,15 +157,14 @@ class HouseHold {
 }
 
 class MainItem extends StatefulWidget {
-  final List<HouseHold> _houseHoldList;
+  final HouseHold _houseHold;
   final Group _group;
-  final int _position;
 
-  MainItem(this._houseHoldList, this._group, this._position);
+  MainItem(this._houseHold, this._group);
 
   @override
   _MainItemState createState() {
-    return _MainItemState(_houseHoldList[_position], _group);
+    return _MainItemState(_houseHold, _group);
   }
 }
 
